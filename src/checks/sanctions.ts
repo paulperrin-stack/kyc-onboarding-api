@@ -18,7 +18,11 @@ export function isOnSanctionsList(personInfo: PersonInfo, sanctionsList: Sanctio
         return personInfo.fullName.toLowerCase().trim() === sanctionedPerson.name.toLowerCase().trim();
     });
     const dobMatch = sanctionsList.some(function (sanctionedPerson) {
-        return personInfo.dateOfBirth.getTime() === sanctionedPerson.dateOfBirth.getTime();
+        return (
+            personInfo.dateOfBirth.getFullYear() === sanctionedPerson.dateOfBirth.getFullYear() &&
+            personInfo.dateOfBirth.getMonth() === sanctionedPerson.dateOfBirth.getMonth() &&
+            personInfo.dateOfBirth.getDate() === sanctionedPerson.dateOfBirth.getDate()
+        )
     });
 
     return { nameMatch, dobMatch };

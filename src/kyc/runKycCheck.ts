@@ -3,7 +3,7 @@ import { hasCountryRisk, type Address } from "../checks/countryRisk.js";
 import { isOnSanctionsList, type PersonInfo, type SanctionedPerson } from "../checks/sanctions.js";
 import { makeDecision, explainDecision, type Verdict } from "./decision.js";
 
-interface Applicant {
+export interface Applicant {
     fullName: string;
     dateOfBirth: Date;
     nationality: string;
