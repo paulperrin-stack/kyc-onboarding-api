@@ -1,15 +1,9 @@
+import { z } from 'zod';
 import { calculateAge, isOfLegalAge } from "../checks/age.js";
-import { hasCountryRisk, type Address } from "../checks/countryRisk.js";
+import { hasCountryRisk } from "../checks/countryRisk.js";
 import { isOnSanctionsList, type PersonInfo, type SanctionedPerson } from "../checks/sanctions.js";
 import { makeDecision, explainDecision, type Verdict } from "./decision.js";
-
-export interface Applicant {
-    fullName: string;
-    dateOfBirth: Date;
-    nationality: string;
-    address: Address;
-    middleName?: string;
-}
+import { type Applicant } from "./applicant.schema.js";
 
 export function runKycCheck(applicant: Applicant, sanctionsList: SanctionedPerson[]): KycResult {
     const age = calculateAge(applicant.dateOfBirth);
