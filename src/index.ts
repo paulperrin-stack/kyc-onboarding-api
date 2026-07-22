@@ -1,4 +1,4 @@
-import express from 'express';
+import express, { type Request, type Response, type NextFunction } from 'express';
 import { runKycCheck } from './kyc/runKycCheck.js';
 import { applicantSchema } from './kyc/applicant.schema.js';
 import { type SanctionedPerson } from './checks/sanctions.js';
@@ -23,6 +23,11 @@ app.post('/kyc/verify', (req, res) => {
     const kycResult = runKycCheck(applicant, sanctionsList);
 
     res.json(kycResult);
+});
+
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+    console.error(err);
+    res.status(500).json({ error: "Something went wrong. Please try again." });
 });
 
 app.listen(3000, () => {
