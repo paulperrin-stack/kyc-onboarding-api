@@ -2,6 +2,15 @@
 
 This is a Know Your Customer (KYC) API that checks each applicant's information to help prevent fraud, using sanctions list matching and country risk assessment.
 
+**Live demo:** `https://kyc-onboarding-api.onrender.com` (hosted on Render's free tier — the first request after a period of inactivity may take up to a minute while the service wakes up)
+
+Example request:
+```bash
+curl -X POST https://kyc-onboarding-api.onrender.com/kyc/verify \
+  -H "Content-Type: application/json" \
+  -d '{"fullName": "Jane Doe", "dateOfBirth": "1990-01-01", "nationality": "FR", "address": {"street": "1 Rue Test", "city": "Paris", "country": "FR"}, "email": "jane@example.com", "phone": "0600000000"}'
+```
+
 ## How It Works
 
 The API runs four checks on each applicant:
