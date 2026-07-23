@@ -16,8 +16,47 @@ app.post('/kyc/verify', async (req, res) => {
     }
 
     const applicant = result.data;
+
+    const savedApplicant = await prisma.applicant.upsert({
+        where: { email: applicant.email },
+        update: {
+            fullName: applicant.fullName,
+            middleName: applicant.middleName ?? null,
+            dateOfBirth: applicant.dateOfBirth,
+            nationality: applicant.nationality,
+            addressStreet: applicant.address.street,
+            addressCity: applicant.address.city,
+            addressCountry: applicant.address.country,
+            phone: applicant.phone,
+        },
+        create: {
+            email: applicant.email,
+            fullName: applicant.fullName,
+            middleName: applicant.middleName ?? null,
+            dateOfBirth: applicant.dateOfBirth,
+            nationality: applicant.nationality,
+            addressStreet: applicant.address.street,
+            addressCity: applicant.address.city,
+            addressCountry: applicant.address.country,
+            phone: applicant.phone,
+        },
+    });
+
     const sanctionsList = await prisma.sanctionedPerson.findMany();
     const kycResult = runKycCheck(applicant, sanctionsList);
+
+    const savedKycCheck = await prisma.kycCheck.create({
+        data: {
+            age: kycResult.age,
+            legalAge: kycResult.legalAge,
+            countryRisk: kycResult.countryRisk,
+            nameMatch: kycResult.nameMatch,
+            dobMatch: kycResult.dobMatch,
+            decision: kycResult.decision,
+            motif: kycResult.motif,
+            applicantId: savedApplicant.id,
+        }
+    })
 
     res.json(kycResult);
 });

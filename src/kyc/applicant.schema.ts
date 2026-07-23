@@ -7,6 +7,8 @@ const applicantSchema = z.object({
     nationality: z.string(),
     address: addressSchema,
     middleName: z.string().optional(),
+    email: z.email(),
+    phone: z.string(),
 });
 
 export type Applicant = z.infer<typeof applicantSchema>;
