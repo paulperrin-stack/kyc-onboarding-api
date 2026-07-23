@@ -2,17 +2,13 @@ import express, { type Request, type Response, type NextFunction } from 'express
 import { runKycCheck } from './kyc/runKycCheck.js';
 import { applicantSchema } from './kyc/applicant.schema.js';
 import { type SanctionedPerson } from './checks/sanctions.js';
+import { prisma } from './lib/prisma.js';
 
 const app = express();
 
 app.use(express.json());
 
-const sanctionsList: SanctionedPerson[] = [
-    { name: 'William Nibodeau', dateOfBirth: new Date(1983, 11, 19) },
-    { name: 'Jacques Bret', dateOfBirth: new Date(1999, 1, 20) },
-];
-
-app.post('/kyc/verify', (req, res) => {
+app.post('/kyc/verify', async (req, res) => {
     const result = applicantSchema.safeParse(req.body);
 
     if (!result.success) {
@@ -20,6 +16,7 @@ app.post('/kyc/verify', (req, res) => {
     }
 
     const applicant = result.data;
+    const sanctionsList = await prisma.sanctionedPerson.findMany();
     const kycResult = runKycCheck(applicant, sanctionsList);
 
     res.json(kycResult);
