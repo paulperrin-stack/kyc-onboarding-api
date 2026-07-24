@@ -39,12 +39,33 @@ Legal age is a hard legal requirement, not a judgment call — there's no ambigu
 **`Applicant.email` is unique, but `SanctionedPerson.name` is not.**
 Email is unique per applicant — it identifies returning users. Names aren't unique, since different people (including different sanctioned individuals) can share the same name.
 
+**Dates are always compared in UTC, never local time.**
+Early versions of this project compared dates using local timezone components. This worked fine locally, but broke in CI, because the machine seeding the test data (my own computer, in a different timezone) and the machine running the tests (GitHub's servers, in UTC) disagreed on what date a given timestamp represented — a date could shift by a day depending on which timezone read it. Every date in this project is now created and compared using UTC explicitly, so the result is the same no matter which machine or timezone runs the code.
+
 ## Tech Stack
 
 - Node.js + TypeScript
 - Express
 - Zod (validation)
 - Prisma + PostgreSQL (Neon)
+- Vitest + Supertest (testing)
+- GitHub Actions (CI)
+
+## Testing
+
+The project has two layers of tests:
+
+- **Unit tests** for the pure logic functions (age calculation, country risk, sanctions matching, decision logic) — no database needed, fast.
+- **Integration tests** for the actual `/kyc/verify` route, using Supertest — these hit a real, separate test database.
+
+Tests run against a dedicated Neon database, kept completely separate from the production database, so running tests never touches real data. Tests also run automatically in CI on every push, via GitHub Actions.
+
+To run tests locally:
+1. Set up a second Neon database for testing
+2. Create a `.env.test` file with its `DATABASE_URL`
+3. `npx dotenv-cli -e .env.test -- npx prisma migrate dev`
+4. `npx dotenv-cli -e .env.test -- npx tsx prisma/seed.ts`
+5. `npm test`
 
 ## Running Locally
 
