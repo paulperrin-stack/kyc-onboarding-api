@@ -19,9 +19,9 @@ export function isOnSanctionsList(personInfo: PersonInfo, sanctionsList: Sanctio
     });
     const dobMatch = sanctionsList.some(function (sanctionedPerson) {
         return (
-            personInfo.dateOfBirth.getFullYear() === sanctionedPerson.dateOfBirth.getFullYear() &&
-            personInfo.dateOfBirth.getMonth() === sanctionedPerson.dateOfBirth.getMonth() &&
-            personInfo.dateOfBirth.getDate() === sanctionedPerson.dateOfBirth.getDate()
+            personInfo.dateOfBirth.getUTCFullYear() === sanctionedPerson.dateOfBirth.getUTCFullYear() &&
+            personInfo.dateOfBirth.getUTCMonth() === sanctionedPerson.dateOfBirth.getUTCMonth() &&
+            personInfo.dateOfBirth.getUTCDate() === sanctionedPerson.dateOfBirth.getUTCDate()
         )
     });
 
