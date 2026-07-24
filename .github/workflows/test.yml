@@ -12,6 +12,8 @@ jobs:
           node-version: 20
       - run: npm install
       - run: npx prisma generate
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
       - run: npm test
         env:
           DATABASE_URL: ${{ secrets.DATABASE_URL_TEST }}
